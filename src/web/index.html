@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品上架类目识别工作台</title>
+    <style>
+        :root {
+            --bg: #f4f6f8;
+            --panel: #ffffff;
+            --panel-soft: #f8fafc;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --line: #d9e0e8;
+            --primary: #1769aa;
+            --primary-strong: #0f4c81;
+            --green: #0f8f5f;
+            --green-soft: #e9f8f1;
+            --amber: #a16207;
+            --amber-soft: #fff7df;
+            --red: #b42318;
+            --red-soft: #fff0ed;
+            --shadow: 0 12px 30px rgba(30, 41, 59, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: var(--bg);
+            color: var(--text);
+            font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+        }
+
+        button,
+        input,
+        select,
+        textarea {
+            font: inherit;
+        }
+
+        .app-shell {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 232px minmax(0, 1fr);
+        }
+
+        .sidebar {
+            background: #132238;
+            color: #dbeafe;
+            padding: 22px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-height: 42px;
+        }
+
+        .brand-mark {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: grid;
+            place-items: center;
+            background: #2eaadc;
+            color: #082f49;
+            font-weight: 800;
+        }
+
+        .brand-name {
+            font-size: 17px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .nav {
+            display: grid;
+            gap: 6px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-height: 38px;
+            padding: 0 10px;
+            border-radius: 6px;
+            color: #b8c7da;
+        }
+
+        .nav-item.active {
+            background: #213653;
+            color: #ffffff;
+        }
+
+        .nav-icon {
+            width: 18px;
+            text-align: center;
+        }
+
+        .sidebar-card {
+            margin-top: auto;
+            padding: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .sidebar-card strong {
+            display: block;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .sidebar-card span {
+            color: #b8c7da;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .main {
+            min-width: 0;
+            display: grid;
+            grid-template-rows: auto 1fr;
+        }
+
+        .topbar {
+            min-height: 66px;
+            background: var(--panel);
+            border-bottom: 1px solid var(--line);
+            padding: 0 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .page-title {
+            margin: 0;
+            font-size: 22px;
+            line-height: 1.2;
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-pill {
+            min-height: 32px;
+            padding: 0 12px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: var(--green-soft);
+            color: var(--green);
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .content {
+            padding: 24px 28px 32px;
+            display: grid;
+            grid-template-columns: minmax(0, 1.45fr) minmax(340px, 0.8fr);
+            gap: 20px;
+        }
+
+        .section {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        .section-head {
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .section-title {
+            margin: 0;
+            font-size: 17px;
+        }
+
+        .section-meta {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .form-grid {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .field {
+            display: grid;
+            gap: 7px;
+        }
+
+        .field.full {
+            grid-column: 1 / -1;
+        }
+
+        .field label {
+            font-size: 13px;
+            color: #374151;
+            font-weight: 700;
+        }
+
+        .field input,
+        .field select,
+        .field textarea {
+            width: 100%;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            background: #ffffff;
+            color: var(--text);
+            outline: none;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+
+        .field input,
+        .field select {
+            height: 42px;
+            padding: 0 12px;
+        }
+
+        .field textarea {
+            min-height: 94px;
+            resize: vertical;
+            padding: 11px 12px;
+            line-height: 1.5;
+        }
+
+        .field input:focus,
+        .field select:focus,
+        .field textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(23, 105, 170, 0.13);
+        }
+
+        .upload-box {
+            min-height: 124px;
+            border: 1px dashed #9fb2c8;
+            border-radius: 8px;
+            background: var(--panel-soft);
+            display: grid;
+            place-items: center;
+            text-align: center;
+            padding: 18px;
+            color: var(--muted);
+        }
+
+        .upload-box strong {
+            display: block;
+            color: #334155;
+            margin-bottom: 5px;
+        }
+
+        .toolbar {
+            padding: 0 20px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            min-height: 40px;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            padding: 0 14px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .btn.primary {
+            background: var(--primary);
+            color: #ffffff;
+        }
+
+        .btn.primary:hover {
+            background: var(--primary-strong);
+        }
+
+        .btn.secondary {
+            background: #ffffff;
+            border-color: #cbd5e1;
+            color: #334155;
+        }
+
+        .btn:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+
+        .side-stack {
+            display: grid;
+            gap: 20px;
+            align-content: start;
+        }
+
+        .result-panel {
+            padding: 20px;
+            display: grid;
+            gap: 16px;
+        }
+
+        .category-result {
+            border: 1px solid #bbf7d0;
+            background: var(--green-soft);
+            border-radius: 8px;
+            padding: 18px;
+        }
+
+        .category-result.pending {
+            border-color: #fde68a;
+            background: var(--amber-soft);
+        }
+
+        .category-label {
+            margin: 0 0 8px;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .category-name {
+            margin: 0;
+            color: #065f46;
+            font-size: 28px;
+            line-height: 1.2;
+            font-weight: 800;
+            overflow-wrap: anywhere;
+        }
+
+        .pending .category-name {
+            color: var(--amber);
+            font-size: 20px;
+        }
+
+        .confidence {
+            height: 8px;
+            border-radius: 999px;
+            overflow: hidden;
+            background: #e5e7eb;
+        }
+
+        .confidence span {
+            display: block;
+            width: 0;
+            height: 100%;
+            background: var(--green);
+            transition: width 0.3s;
+        }
+
+        .checklist {
+            padding: 20px;
+            display: grid;
+            gap: 12px;
+        }
+
+        .check-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-height: 30px;
+            color: #475569;
+            font-size: 14px;
+        }
+
+        .check-row input {
+            width: 17px;
+            height: 17px;
+            accent-color: var(--primary);
+        }
+
+        .preview {
+            padding: 20px;
+            display: grid;
+            gap: 14px;
+        }
+
+        .product-preview {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            overflow: hidden;
+            background: #ffffff;
+        }
+
+        .preview-media {
+            aspect-ratio: 16 / 10;
+            background:
+                linear-gradient(135deg, rgba(23, 105, 170, 0.16), rgba(15, 143, 95, 0.12)),
+                repeating-linear-gradient(45deg, #f8fafc 0, #f8fafc 12px, #eef2f7 12px, #eef2f7 24px);
+            display: grid;
+            place-items: center;
+            color: #64748b;
+            font-weight: 700;
+        }
+
+        .preview-body {
+            padding: 14px;
+            display: grid;
+            gap: 8px;
+        }
+
+        .preview-title {
+            margin: 0;
+            min-height: 42px;
+            line-height: 1.45;
+            font-weight: 700;
+        }
+
+        .preview-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .price {
+            color: #b42318;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .alert {
+            display: none;
+            border-radius: 6px;
+            padding: 12px 14px;
+            font-size: 14px;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert.error {
+            background: var(--red-soft);
+            color: var(--red);
+            border: 1px solid #fecaca;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.35);
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            display: none;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .loading .spinner {
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 1040px) {
+            .app-shell {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 680px) {
+            .topbar {
+                align-items: flex-start;
+                flex-direction: column;
+                padding: 18px;
+            }
+
+            .content {
+                padding: 16px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .toolbar {
+                justify-content: stretch;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">EC</div>
+                <div class="brand-name">类目中台</div>
+            </div>
+
+            <nav class="nav" aria-label="运营导航">
+                <div class="nav-item active"><span class="nav-icon">▣</span><span>商品上架</span></div>
+                <div class="nav-item"><span class="nav-icon">◇</span><span>类目管理</span></div>
+                <div class="nav-item"><span class="nav-icon">◎</span><span>模型评估</span></div>
+                <div class="nav-item"><span class="nav-icon">⌁</span><span>任务日志</span></div>
+            </nav>
+
+            <div class="sidebar-card">
+                <strong>BERT 商品分类</strong>
+                <span>当前类目体系：30 个商品类目</span>
+            </div>
+        </aside>
+
+        <main class="main">
+            <header class="topbar">
+                <h1 class="page-title">商品上架审核</h1>
+                <div class="top-actions">
+                    <span class="status-pill"><span class="dot"></span>模型服务在线</span>
+                    <button class="btn secondary" type="button" id="resetBtn">重置</button>
+                </div>
+            </header>
+
+            <div class="content">
+                <section class="section" aria-labelledby="product-form-title">
+                    <div class="section-head">
+                        <h2 class="section-title" id="product-form-title">商品信息</h2>
+                        <span class="section-meta">草稿单号：DRAFT-20260603</span>
+                    </div>
+
+                    <form id="productForm">
+                        <div class="form-grid">
+                            <div class="field full">
+                                <label for="titleInput">商品标题</label>
+                                <textarea id="titleInput" placeholder="例如：华为 Mate 60 Pro 12GB+512GB 智能手机 全网通" required></textarea>
+                            </div>
+
+                            <div class="field">
+                                <label for="skuInput">商家 SKU</label>
+                                <input id="skuInput" type="text" placeholder="SKU-20260603-001">
+                            </div>
+
+                            <div class="field">
+                                <label for="brandInput">品牌</label>
+                                <input id="brandInput" type="text" placeholder="华为">
+                            </div>
+
+                            <div class="field">
+                                <label for="priceInput">销售价</label>
+                                <input id="priceInput" type="number" min="0" step="0.01" placeholder="4999.00">
+                            </div>
+
+                            <div class="field">
+                                <label for="channelInput">上架渠道</label>
+                                <select id="channelInput">
+                                    <option>自营商城</option>
+                                    <option>天猫店铺</option>
+                                    <option>京东店铺</option>
+                                    <option>抖音小店</option>
+                                </select>
+                            </div>
+
+                            <div class="field full">
+                                <label>商品主图</label>
+                                <div class="upload-box">
+                                    <div>
+                                        <strong>上传区域</strong>
+                                        <span>当前页面保留运营录入位，提交前可补充图片文件。</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="toolbar">
+                            <button class="btn secondary" type="button" id="fillExampleBtn">填入示例</button>
+                            <button class="btn primary" type="submit" id="predictBtn">
+                                <span>识别类目</span>
+                                <span class="spinner" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                    </form>
+                </section>
+
+                <div class="side-stack">
+                    <section class="section" aria-labelledby="result-title">
+                        <div class="section-head">
+                            <h2 class="section-title" id="result-title">类目结果</h2>
+                            <span class="section-meta" id="resultTime">未识别</span>
+                        </div>
+
+                        <div class="result-panel">
+                            <div class="category-result pending" id="resultCard">
+                                <p class="category-label">推荐类目</p>
+                                <p class="category-name" id="categoryResult">等待商品标题</p>
+                            </div>
+
+                            <div class="confidence" aria-label="类目置信度">
+                                <span id="confidenceBar"></span>
+                            </div>
+
+                            <div class="field">
+                                <label for="manualCategory">人工确认类目</label>
+                                <select id="manualCategory">
+                                    <option value="">识别后自动填充</option>
+                                </select>
+                            </div>
+
+                            <div class="alert error" id="errorBox"></div>
+                        </div>
+                    </section>
+
+                    <section class="section" aria-labelledby="checklist-title">
+                        <div class="section-head">
+                            <h2 class="section-title" id="checklist-title">上架检查</h2>
+                            <span class="section-meta">运营确认</span>
+                        </div>
+                        <div class="checklist">
+                            <label class="check-row"><input type="checkbox" checked>标题完整</label>
+                            <label class="check-row"><input type="checkbox">图片已上传</label>
+                            <label class="check-row"><input type="checkbox" id="categoryChecked">类目已确认</label>
+                            <label class="check-row"><input type="checkbox">价格已校验</label>
+                        </div>
+                    </section>
+
+                    <section class="section" aria-labelledby="preview-title">
+                        <div class="section-head">
+                            <h2 class="section-title" id="preview-title">商品预览</h2>
+                        </div>
+                        <div class="preview">
+                            <div class="product-preview">
+                                <div class="preview-media">商品主图</div>
+                                <div class="preview-body">
+                                    <p class="preview-title" id="previewName">商品标题将在这里同步显示</p>
+                                    <div class="preview-row">
+                                        <span id="previewBrand">品牌待填写</span>
+                                        <span id="previewChannel">自营商城</span>
+                                    </div>
+                                    <div class="preview-row">
+                                        <span class="price" id="previewPrice">¥ --</span>
+                                        <span id="previewCategory">未分类</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const labels = [
+            "3C数码", "个护", "书籍", "乳品", "休闲食品", "健康", "健康食品", "办公", "宠物", "家居",
+            "家电", "服饰内衣", "母婴", "水产", "水果", "汽车用品", "清洁", "玩具", "礼品", "粮油速食",
+            "美妆", "肉禽蛋", "蔬菜", "运动", "酒饮冲调", "钟表配饰", "鞋靴箱包", "餐饮", "香烟", "鲜花绿植"
+        ];
+
+        const form = document.getElementById("productForm");
+        const titleInput = document.getElementById("titleInput");
+        const skuInput = document.getElementById("skuInput");
+        const brandInput = document.getElementById("brandInput");
+        const priceInput = document.getElementById("priceInput");
+        const channelInput = document.getElementById("channelInput");
+        const predictBtn = document.getElementById("predictBtn");
+        const categoryResult = document.getElementById("categoryResult");
+        const resultCard = document.getElementById("resultCard");
+        const resultTime = document.getElementById("resultTime");
+        const confidenceBar = document.getElementById("confidenceBar");
+        const manualCategory = document.getElementById("manualCategory");
+        const errorBox = document.getElementById("errorBox");
+        const categoryChecked = document.getElementById("categoryChecked");
+        const previewName = document.getElementById("previewName");
+        const previewBrand = document.getElementById("previewBrand");
+        const previewChannel = document.getElementById("previewChannel");
+        const previewPrice = document.getElementById("previewPrice");
+        const previewCategory = document.getElementById("previewCategory");
+
+        labels.forEach((label) => {
+            const option = document.createElement("option");
+            option.value = label;
+            option.textContent = label;
+            manualCategory.appendChild(option);
+        });
+
+        function syncPreview() {
+            previewName.textContent = titleInput.value.trim() || "商品标题将在这里同步显示";
+            previewBrand.textContent = brandInput.value.trim() || "品牌待填写";
+            previewChannel.textContent = channelInput.value;
+            previewPrice.textContent = priceInput.value ? `¥ ${Number(priceInput.value).toFixed(2)}` : "¥ --";
+            previewCategory.textContent = manualCategory.value || "未分类";
+        }
+
+        function setLoading(isLoading) {
+            predictBtn.disabled = isLoading;
+            predictBtn.classList.toggle("loading", isLoading);
+        }
+
+        function showError(message) {
+            errorBox.textContent = message;
+            errorBox.classList.add("show");
+        }
+
+        function clearError() {
+            errorBox.textContent = "";
+            errorBox.classList.remove("show");
+        }
+
+        async function predictCategory(text) {
+            const response = await fetch("/predict", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ text })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            return response.json();
+        }
+
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const text = titleInput.value.trim();
+
+            if (!text) {
+                showError("请先填写商品标题。");
+                titleInput.focus();
+                return;
+            }
+
+            clearError();
+            setLoading(true);
+
+            try {
+                const data = await predictCategory(text);
+                const category = data.category || "未识别";
+
+                categoryResult.textContent = category;
+                resultCard.classList.remove("pending");
+                manualCategory.value = category;
+                categoryChecked.checked = true;
+                previewCategory.textContent = category;
+                confidenceBar.style.width = "86%";
+                resultTime.textContent = new Date().toLocaleTimeString("zh-CN", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit"
+                });
+            } catch (error) {
+                showError("类目识别失败，请确认 FastAPI 服务和模型文件可用。");
+            } finally {
+                setLoading(false);
+            }
+        });
+
+        document.getElementById("fillExampleBtn").addEventListener("click", () => {
+            titleInput.value = "华为 Mate 60 Pro 12GB+512GB 智能手机 全网通";
+            skuInput.value = "SKU-3C-20260603-001";
+            brandInput.value = "华为";
+            priceInput.value = "6999";
+            channelInput.value = "自营商城";
+            syncPreview();
+            clearError();
+        });
+
+        document.getElementById("resetBtn").addEventListener("click", () => {
+            form.reset();
+            manualCategory.value = "";
+            categoryChecked.checked = false;
+            categoryResult.textContent = "等待商品标题";
+            resultCard.classList.add("pending");
+            resultTime.textContent = "未识别";
+            confidenceBar.style.width = "0";
+            clearError();
+            syncPreview();
+        });
+
+        [titleInput, brandInput, priceInput, channelInput, manualCategory].forEach((element) => {
+            element.addEventListener("input", syncPreview);
+            element.addEventListener("change", syncPreview);
+        });
+    </script>
+</body>
+</html>

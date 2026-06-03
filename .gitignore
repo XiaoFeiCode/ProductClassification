@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# IDE
+.idea/
+.vscode/
+
+# Logs and runtime outputs
+logs/
+*.log
+runs/
+
+# Hugging Face processed datasets
+data/processed/
+
+# Large model artifacts and training checkpoints
+checkpoint/last/
+checkpoint/**/*.pt
+checkpoint/**/*.bin
+checkpoint/**/*.safetensors
+
+# Keep lightweight metadata that documents the trained classes.
+!checkpoint/label.txt
+!checkpoint/best/
+!checkpoint/best/config.json
+
+# Local pretrained model downloads
+pretrained/
+
+# OS
+.DS_Store
+Thumbs.db
