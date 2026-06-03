@@ -6,3 +6,7 @@
 *.json text eol=lf
 *.html text eol=lf
 *.svg text eol=lf
+
+# Keep GitHub language statistics focused on the backend / ML code.
+src/web/index.html linguist-detectable=false
+docs/*.svg linguist-detectable=false
