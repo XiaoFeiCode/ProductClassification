@@ -85,9 +85,9 @@ label	text_a
 
 当前类别体系包含 30 个商品类目，类别清单保存在 `checkpoint/label.txt`。
 
-## 8.4 技术细节
+## 技术细节
 
-### 8.4.1 构建数据集
+### 构建数据集
 
 业务版本的数据来源于实际业务数据库，主要涉及商品表 `spu_info` 以及三级类目表 `base_category1`、`base_category2`、`base_category3`。
 
@@ -112,33 +112,19 @@ label -> text_a
 
 其中 `label` 对应商品类目，`text_a` 对应商品标题。
 
-### 8.4.2 微调模型
+### 微调模型
 
 业务版本参考训练配置如下：
 
-| 模块 | 配置项 | 说明 |
-| --- | --- | --- |
-| 预训练模型 | `bert-base-chinese` | 中文 BERT 预训练模型 |
-| 模型架构 | BERT + Dropout + Linear | `BertForSequenceClassification` |
-| 数据集 | 约 50 万条样本 | 约 1000 个三级类目 |
-| 最大序列长度 | 64 | 商品标题通常较短 |
-| 训练轮次 | 5 | 根据验证集表现早停 |
-| 批次大小 | 256 | 结合 V100 32GB 显存设置 |
-| 学习率 | `2e-5` | BERT 微调常用学习率 |
-| 优化器 | AdamW | Transformer 微调常用优化器 |
-| Dropout | 0.1 | 降低过拟合风险 |
-| 训练策略 | 全参数微调 | 更新 BERT 和分类头全部参数 |
-| 混合精度 | 开启 | 提升训练速度并降低显存占用 |
-| Warmup | 总步数的 10% | 缓解训练初期不稳定 |
-| 学习率衰减 | 线性衰减 | 随训练步数逐步降低学习率 |
-| 早停策略 | 验证集 F1 连续 3 轮不提升停止 | 防止过拟合 |
-| 训练设备 | V100 32GB | 单卡训练 |
-| 训练框架 | Transformers + PyTorch | 基于 Hugging Face 生态 |
-| 训练时长 | 约 1 小时 | 视数据规模和硬件而定 |
-| 准确率 | 78% | 业务版本评估结果 |
-| 精确率 | 77% | 业务版本评估结果 |
-| 召回率 | 76% | 业务版本评估结果 |
-| F1 分数 | 76% | 业务版本评估结果 |
+| 配置项 | 说明 |
+| --- | --- |
+| 预训练模型 | `bert-base-chinese` |
+| 模型架构 | `BertForSequenceClassification`，即 BERT + Dropout + Linear 分类头 |
+| 数据规模 | 约 50 万条样本，约 1000 个三级类目 |
+| 核心超参 | 最大序列长度 64，训练 5 轮，批次大小 256，学习率 `2e-5` |
+| 训练策略 | AdamW，全参数微调，混合精度训练，Warmup 10%，线性学习率衰减，验证集 F1 早停 |
+| 训练环境 | V100 32GB，Transformers + PyTorch |
+| 评估结果 | Accuracy 78%，Precision 77%，Recall 76%，F1 76% |
 
 当前仓库中的训练参数以 `src/configuration/config.py` 为准，可根据数据规模、显存和业务类别数量调整。
 
@@ -231,8 +217,7 @@ POST /predict
 
 `.gitignore` 已忽略这些文件，避免 GitHub 推送失败。克隆项目后如需直接运行推理服务，需要自行准备模型权重：
 
-1. 在本地运行训练流程生成 `checkpoint/best/model.safetensors`。
-2. 或使用 Git LFS / Hugging Face Hub / 网盘保存权重文件，再放回 `checkpoint/best/`。
+在本地运行训练流程生成 `checkpoint/best/model.safetensors`。
 
 本仓库保留了轻量级模型配置、类别文件和 tokenizer 文件，方便展示项目结构和复现流程。
 
@@ -242,11 +227,3 @@ POST /predict
 - 批量商品标题自动归类。
 - 运营后台智能辅助录入。
 - 商品审核前的基础类目校验。
-
-## 后续优化方向
-
-- 返回 Top-K 推荐类目和置信度分数。
-- 支持品牌、价格、属性等多字段联合分类。
-- 增加批量上传和批量预测能力。
-- 将模型权重发布到 Hugging Face Hub，完善一键部署流程。
-- 增加接口测试和模型评估报告。
