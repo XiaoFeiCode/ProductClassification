@@ -6,8 +6,6 @@
 ![Transformers](https://img.shields.io/badge/Transformers-BERT-FFD21E?style=flat-square&logo=huggingface&logoColor=black)
 ![HuggingFace](https://img.shields.io/badge/HuggingFace-Datasets-FF9D00?style=flat-square)
 ![NLP](https://img.shields.io/badge/NLP-Text%20Classification-6A5ACD?style=flat-square)
-![ECommerce](https://img.shields.io/badge/E--Commerce-Category%20Prediction-0F8F5F?style=flat-square)
-![Status](https://img.shields.io/badge/Status-Ready-2E7D32?style=flat-square)
 
 面向电商运营场景的商品标题智能分类系统。项目使用中文 BERT 微调模型，根据商品标题自动推荐商品类目，可嵌入商品上架、类目审核、运营录入和基础质检流程。
 
