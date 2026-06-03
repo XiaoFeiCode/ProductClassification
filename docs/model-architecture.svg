@@ -1,0 +1,69 @@
+<svg width="1200" height="780" viewBox="0 0 1200 780" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M2 2 L10 6 L2 10 Z" fill="#475569"/>
+    </marker>
+    <style>
+      .title { font: 700 30px 'Microsoft YaHei', Arial, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 18px 'Microsoft YaHei', Arial, sans-serif; fill: #64748b; }
+      .box-title { font: 700 20px 'Microsoft YaHei', Arial, sans-serif; fill: #0f172a; }
+      .box-text { font: 400 16px 'Microsoft YaHei', Arial, sans-serif; fill: #475569; }
+      .layer { font: 700 18px 'Microsoft YaHei', Arial, sans-serif; fill: #172554; }
+      .line { stroke: #475569; stroke-width: 2.2; marker-end: url(#arrow); }
+      .panel { fill: #ffffff; stroke: #d9e0e8; stroke-width: 2; }
+      .input { fill: #eef6ff; stroke: #83b8df; stroke-width: 1.8; }
+      .bert { fill: #eef2ff; stroke: #a5b4fc; stroke-width: 1.8; }
+      .head { fill: #f0fdf4; stroke: #86efac; stroke-width: 1.8; }
+      .output { fill: #fff7ed; stroke: #fdba74; stroke-width: 1.8; }
+    </style>
+  </defs>
+
+  <rect x="24" y="24" width="1152" height="732" rx="18" class="panel"/>
+  <text x="60" y="75" class="title">BERT 商品类目分类模型</text>
+  <text x="60" y="108" class="subtitle">BertForSequenceClassification：BERT 编码商品标题，并通过分类头输出商品类目</text>
+
+  <rect x="84" y="178" width="230" height="96" rx="12" class="input"/>
+  <text x="122" y="215" class="box-title">商品标题</text>
+  <text x="118" y="246" class="box-text">spu_name / text_a</text>
+
+  <rect x="408" y="178" width="230" height="96" rx="12" class="input"/>
+  <text x="458" y="215" class="box-title">Tokenizer</text>
+  <text x="435" y="246" class="box-text">input_ids / mask</text>
+
+  <rect x="430" y="345" width="330" height="292" rx="16" class="bert"/>
+  <text x="500" y="382" class="box-title">bert-base-chinese</text>
+
+  <rect x="480" y="416" width="230" height="50" rx="10" fill="#ffffff" stroke="#a5b4fc" stroke-width="1.5"/>
+  <text x="543" y="448" class="layer">Embeddings</text>
+
+  <rect x="480" y="494" width="230" height="50" rx="10" fill="#ffffff" stroke="#a5b4fc" stroke-width="1.5"/>
+  <text x="545" y="526" class="layer">BertEncoder</text>
+
+  <rect x="480" y="572" width="230" height="50" rx="10" fill="#ffffff" stroke="#a5b4fc" stroke-width="1.5"/>
+  <text x="552" y="604" class="layer">BertPooler</text>
+
+  <rect x="850" y="390" width="230" height="72" rx="12" class="head"/>
+  <text x="908" y="418" class="box-title">Dropout</text>
+  <text x="917" y="444" class="box-text">p = 0.1</text>
+
+  <rect x="850" y="520" width="230" height="72" rx="12" class="head"/>
+  <text x="916" y="548" class="box-title">Linear</text>
+  <text x="885" y="574" class="box-text">num_labels 分类头</text>
+
+  <rect x="850" y="650" width="230" height="72" rx="12" class="output"/>
+  <text x="905" y="678" class="box-title">商品类目</text>
+  <text x="887" y="704" class="box-text">category / label</text>
+
+  <path d="M314 226 L408 226" class="line"/>
+  <path d="M523 274 L523 345" class="line"/>
+  <path d="M595 466 L595 494" class="line"/>
+  <path d="M595 544 L595 572" class="line"/>
+  <path d="M760 597 C815 597 815 426 850 426" class="line"/>
+  <path d="M965 462 L965 520" class="line"/>
+  <path d="M965 592 L965 650" class="line"/>
+
+  <rect x="84" y="430" width="270" height="128" rx="12" fill="#f8fafc" stroke="#d9e0e8" stroke-width="1.4"/>
+  <text x="112" y="466" class="box-title">训练目标</text>
+  <text x="112" y="498" class="box-text">预测最细粒度三级类目</text>
+  <text x="112" y="528" class="box-text">再映射一级 / 二级类目</text>
+</svg>

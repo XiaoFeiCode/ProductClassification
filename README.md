@@ -1,4 +1,13 @@
-# ProductClassification
+# CatePilot 商品类目智能识别平台
+
+![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=flat-square&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688?style=flat-square&logo=fastapi&logoColor=white)
+![PyTorch](https://img.shields.io/badge/PyTorch-Deep%20Learning-EE4C2C?style=flat-square&logo=pytorch&logoColor=white)
+![Transformers](https://img.shields.io/badge/Transformers-BERT-FFD21E?style=flat-square&logo=huggingface&logoColor=black)
+![HuggingFace](https://img.shields.io/badge/HuggingFace-Datasets-FF9D00?style=flat-square)
+![NLP](https://img.shields.io/badge/NLP-Text%20Classification-6A5ACD?style=flat-square)
+![ECommerce](https://img.shields.io/badge/E--Commerce-Category%20Prediction-0F8F5F?style=flat-square)
+![Status](https://img.shields.io/badge/Status-Ready-2E7D32?style=flat-square)
 
 面向电商运营场景的商品标题智能分类系统。项目使用中文 BERT 微调模型，根据商品标题自动推荐商品类目，可嵌入商品上架、类目审核、运营录入和基础质检流程。
 
@@ -22,34 +31,11 @@
 
 业务场景中，商品类目通常存在一级、二级、三级的层级关系。模型只需要预测最细粒度的三级类目，再根据三级类目的映射关系反推出二级类目和一级类目。
 
-```mermaid
-flowchart LR
-    A["业务数据库<br/>spu_info"] --> D["构建训练样本"]
-    B["一级类目<br/>base_category1"] --> D
-    C["二级类目<br/>base_category2"] --> D
-    E["三级类目<br/>base_category3"] --> D
-    D --> F["训练样本<br/>spu_name -> base_category3"]
-    F --> G["BERT 文本分类模型"]
-    G --> H["预测三级类目"]
-    H --> I["反推二级类目"]
-    I --> J["反推一级类目"]
-    J --> K["运营上架页面<br/>推荐商品类目"]
-```
+![系统流程图](docs/system-flow.svg)
 
 ## 模型结构
 
-```mermaid
-flowchart TB
-    A["商品标题<br/>spu_name"] --> B["Tokenizer<br/>input_ids / attention_mask"]
-    B --> C["bert-base-chinese"]
-    C --> D["BertEncoder"]
-    D --> E["BertPooler"]
-    E --> F["Dropout"]
-    F --> G["Linear 分类层"]
-    G --> H["类别 logits"]
-    H --> I["Softmax / Argmax"]
-    I --> J["推荐商品类目"]
-```
+![模型结构图](docs/model-architecture.svg)
 
 ## 技术栈
 

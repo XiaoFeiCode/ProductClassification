@@ -1,0 +1,73 @@
+<svg width="1400" height="620" viewBox="0 0 1400 620" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M2 2 L10 6 L2 10 Z" fill="#475569"/>
+    </marker>
+    <style>
+      .title { font: 700 30px 'Microsoft YaHei', Arial, sans-serif; fill: #0f172a; }
+      .subtitle { font: 400 18px 'Microsoft YaHei', Arial, sans-serif; fill: #64748b; }
+      .box-title { font: 700 20px 'Microsoft YaHei', Arial, sans-serif; fill: #0f172a; }
+      .box-text { font: 400 16px 'Microsoft YaHei', Arial, sans-serif; fill: #475569; }
+      .tag { font: 700 16px 'Microsoft YaHei', Arial, sans-serif; fill: #1769aa; }
+      .line { stroke: #475569; stroke-width: 2.2; marker-end: url(#arrow); }
+      .soft { fill: #f8fafc; stroke: #cbd5e1; stroke-width: 1.6; }
+      .input { fill: #eef6ff; stroke: #83b8df; stroke-width: 1.8; }
+      .model { fill: #f0fdf4; stroke: #86efac; stroke-width: 1.8; }
+      .output { fill: #fff7ed; stroke: #fdba74; stroke-width: 1.8; }
+      .panel { fill: #ffffff; stroke: #d9e0e8; stroke-width: 2; }
+    </style>
+  </defs>
+
+  <rect x="24" y="24" width="1352" height="572" rx="18" class="panel"/>
+  <text x="60" y="75" class="title">CatePilot 系统流程</text>
+  <text x="60" y="108" class="subtitle">从业务数据构建训练样本，预测三级类目，并反推出完整类目路径</text>
+
+  <rect x="60" y="158" width="230" height="70" rx="10" class="input"/>
+  <text x="86" y="187" class="box-title">spu_info</text>
+  <text x="86" y="213" class="box-text">商品名称 / 商品 SPU</text>
+
+  <rect x="60" y="258" width="230" height="70" rx="10" class="input"/>
+  <text x="86" y="287" class="box-title">base_category1</text>
+  <text x="86" y="313" class="box-text">一级类目</text>
+
+  <rect x="60" y="358" width="230" height="70" rx="10" class="input"/>
+  <text x="86" y="387" class="box-title">base_category2</text>
+  <text x="86" y="413" class="box-text">二级类目</text>
+
+  <rect x="60" y="458" width="230" height="70" rx="10" class="input"/>
+  <text x="86" y="487" class="box-title">base_category3</text>
+  <text x="86" y="513" class="box-text">三级类目</text>
+
+  <rect x="395" y="286" width="220" height="86" rx="12" class="soft"/>
+  <text x="444" y="321" class="box-title">构建训练样本</text>
+  <text x="429" y="348" class="box-text">spu_name -> category3</text>
+
+  <rect x="710" y="286" width="220" height="86" rx="12" class="model"/>
+  <text x="763" y="321" class="box-title">BERT 分类模型</text>
+  <text x="745" y="348" class="box-text">Sequence Classification</text>
+
+  <rect x="1025" y="188" width="250" height="74" rx="10" class="output"/>
+  <text x="1080" y="218" class="box-title">预测三级类目</text>
+  <text x="1072" y="244" class="box-text">base_category3</text>
+
+  <rect x="1025" y="310" width="250" height="74" rx="10" class="output"/>
+  <text x="1080" y="340" class="box-title">反推二级类目</text>
+  <text x="1072" y="366" class="box-text">base_category2</text>
+
+  <rect x="1025" y="432" width="250" height="74" rx="10" class="output"/>
+  <text x="1080" y="462" class="box-title">反推一级类目</text>
+  <text x="1072" y="488" class="box-text">base_category1</text>
+
+  <path d="M290 193 C342 193 342 310 395 310" class="line"/>
+  <path d="M290 293 C342 293 342 323 395 323" class="line"/>
+  <path d="M290 393 C342 393 342 337 395 337" class="line"/>
+  <path d="M290 493 C342 493 342 350 395 350" class="line"/>
+  <path d="M615 329 L710 329" class="line"/>
+  <path d="M930 329 C980 329 980 225 1025 225" class="line"/>
+  <path d="M1150 262 L1150 310" class="line"/>
+  <path d="M1150 384 L1150 432" class="line"/>
+
+  <rect x="395" y="430" width="535" height="88" rx="12" fill="#f8fafc" stroke="#d9e0e8" stroke-width="1.4"/>
+  <text x="425" y="462" class="tag">训练集处理</text>
+  <text x="425" y="492" class="box-text">热门类目下采样 + 冷门类目大模型补样，缓解类别长尾分布</text>
+</svg>
